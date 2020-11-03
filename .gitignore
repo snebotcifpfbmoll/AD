@@ -1,3 +1,5 @@
+### General gitignore file ###
+
 HELP.md
 target/
 !.mvn/wrapper/maven-wrapper.jar
@@ -31,3 +33,7 @@ build/
 
 ### VS Code ###
 .vscode/
+
+### Common files ###
+.DS_Store
+.localized
