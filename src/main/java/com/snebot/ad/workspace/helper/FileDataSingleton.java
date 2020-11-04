@@ -6,7 +6,9 @@ import org.slf4j.LoggerFactory;
 import org.w3c.dom.*;
 
 import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
+import javax.xml.bind.Unmarshaller;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.transform.Transformer;
@@ -84,7 +86,7 @@ public class FileDataSingleton {
             for (int i = 0; i < productList.getLength(); i++) {
                 Node productNode = productList.item(i);
                 if (productNode.getNodeType() == Node.ELEMENT_NODE) {
-                    Element productElement = (Element)productNode;
+                    Element productElement = (Element) productNode;
                     String name = productElement.getTextContent();
                     int value = Integer.parseInt(productElement.getAttribute("value"));
                     products.add(new Product(name, value));
@@ -122,7 +124,7 @@ public class FileDataSingleton {
         ObjectInputStream deserializer = null;
         try {
             deserializer = new ObjectInputStream(new FileInputStream(path));
-            obj = (T)deserializer.readObject();
+            obj = (T) deserializer.readObject();
         } catch (Exception e) {
             log.error("failed to serializer object ", e);
         } finally {
@@ -137,7 +139,7 @@ public class FileDataSingleton {
         return obj;
     }
 
-    public <T extends MarshallingWrapper> File saveMarshallContent(T content, String path) {
+    public <T extends Serializable> File marshallContent(T content, String path) {
         File file = null;
         try {
             file = new File(path);
@@ -150,5 +152,20 @@ public class FileDataSingleton {
         }
 
         return file;
+    }
+
+    public <T extends Serializable> T unmarshallContent(String path, Class<T> classType) {
+        T content = null;
+        try {
+            File file = new File(path);
+            content = classType.getDeclaredConstructor().newInstance();
+            JAXBContext context = JAXBContext.newInstance(content.getClass());
+            Unmarshaller um = context.createUnmarshaller();
+            if (file.exists() && !file.isDirectory()) content = (T) um.unmarshal(file);
+        } catch (Exception e) {
+            log.error("failed to unmarshall file ", e);
+        }
+
+        return content;
     }
 }

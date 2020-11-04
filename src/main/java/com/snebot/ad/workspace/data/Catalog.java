@@ -4,6 +4,7 @@ import com.snebot.ad.workspace.helper.MarshallingWrapper;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.apache.commons.lang3.StringUtils;
 
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementWrapper;
@@ -57,5 +58,14 @@ public class Catalog extends MarshallingWrapper {
 
     public void setProducts(List<Product> products) {
         this.products = products;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj instanceof Catalog) {
+            Catalog catalog = (Catalog)obj;
+            return StringUtils.equals(this.name, catalog.name);
+        }
+        return super.equals(obj);
     }
 }

@@ -1,7 +1,12 @@
 package com.snebot.ad.workspace.data;
 
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlRootElement;
 import java.io.Serializable;
 
+@XmlRootElement(name = "marshallWrapper")
+@XmlAccessorType(XmlAccessType.FIELD)
 public class Student implements Serializable {
     private String name;
     private Integer age;

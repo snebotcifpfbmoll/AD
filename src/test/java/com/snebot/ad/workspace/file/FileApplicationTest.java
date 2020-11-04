@@ -46,16 +46,20 @@ public class FileApplicationTest {
     }
 
     @Test
-    void tryLombok() {
+    void tryMarshalling() {
         DummyUtils dummyUtils = new DummyUtils();
         FileDataSingleton fileDataSingleton = FileDataSingleton.getInstance();
 
-        String path = FileUtils.getUserPath("products.data");
+        String path = FileUtils.getUserPath("products.json");
         Catalog catalog = new Catalog();
         catalog.setName("Test catalog");
         catalog.setProducts(dummyUtils.generateObjects(Product.class, 50));
 
-        File file = fileDataSingleton.saveMarshallContent(catalog, path);
+        File file = fileDataSingleton.marshallContent(catalog, path);
         Assert.notNull(file, "failed to save catalog");
+
+        Catalog loadedCatalog = fileDataSingleton.unmarshallContent(path, Catalog.class);
+        Assert.notNull(loadedCatalog, "failed to unmarshall content");
+        Assert.isTrue(catalog.equals(loadedCatalog), "catalog and loadedCatalog are not equal");
     }
 }
