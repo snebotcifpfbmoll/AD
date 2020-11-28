@@ -62,4 +62,25 @@ public class FileApplicationTest {
         Assert.notNull(loadedCatalog, "failed to unmarshall content");
         Assert.isTrue(catalog.equals(loadedCatalog), "catalog and loadedCatalog are not equal");
     }
+
+    @Test
+    void tryMashrallingJSON() {
+        DummyUtils dummyUtils = new DummyUtils();
+        FileDataSingleton fileDataSingleton = FileDataSingleton.getInstance();
+
+        String path = FileUtils.getUserPath("products.json");
+        Catalog catalog = new Catalog();
+        catalog.setName("Test catalog");
+        catalog.setProducts(dummyUtils.generateObjects(Product.class, 50));
+
+        String content = fileDataSingleton.marshallJSON(catalog);
+        System.out.println(content);
+        FileUtils.createFile(path, content);
+
+        List<String> loaded = FileUtils.readFileLines(path);
+        loaded.forEach(System.out::println);
+        String loadedContent = FileUtils.readFileLines(path).get(0);
+        Catalog loadedCatalog = fileDataSingleton.unmarshallJSON(loadedContent, Catalog.class);
+        Assert.isTrue(catalog.equals(loadedCatalog), "failed unmarshalling of catalog");
+    }
 }

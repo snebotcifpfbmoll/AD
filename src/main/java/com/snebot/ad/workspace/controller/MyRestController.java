@@ -1,13 +1,16 @@
 package com.snebot.ad.workspace.controller;
 
 import com.snebot.ad.workspace.data.Student;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.util.CollectionUtils;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 public class MyRestController {
@@ -36,5 +39,21 @@ public class MyRestController {
             students.add(student);
         }
         return students;
+    }
+
+    @RequestMapping(value = "/menu", method = {RequestMethod.GET, RequestMethod.POST}, produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Map> menu() {
+        try {
+            Map<String, Object> map = new HashMap<>();
+            String[] entrantes = {"Carpaccio", "Queso", "Sopa", "Pan de ajo"};
+            map.put("Entrantes", CollectionUtils.arrayToList(entrantes));
+            String[] pizzas = {"Margarita", "Prosciutto", "Hawaiana", "Funghi", "Calzone"};
+            map.put("Pizzas", CollectionUtils.arrayToList(pizzas));
+            String[] bebidas = {"Coca-Cola", "Fanta", "Agua", "Zumo"};
+            map.put("Bebidas", CollectionUtils.arrayToList(bebidas));
+            return new ResponseEntity<>(map, HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 }

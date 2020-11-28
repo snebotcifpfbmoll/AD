@@ -1,19 +1,20 @@
 package com.snebot.ad.workspace.data;
 
-import com.snebot.ad.workspace.helper.MarshallingWrapper;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.apache.commons.lang3.StringUtils;
 
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlElementWrapper;
+import javax.xml.bind.annotation.*;
+import java.io.Serializable;
 import java.util.List;
 
 @Getter
 @Setter
 @NoArgsConstructor
-public class Catalog extends MarshallingWrapper {
+@XmlRootElement(name = "catalog")
+@XmlAccessorType(XmlAccessType.FIELD)
+public class Catalog implements Serializable {
     @XmlElement(name = "name")
     private String name;
 
@@ -22,7 +23,7 @@ public class Catalog extends MarshallingWrapper {
     private List<Product> products;
 
     @XmlElement(name = "total")
-    private Double total;
+    private Double total = 0.0D;
 
     public void setTotal(Double total) {
         this.total = total;

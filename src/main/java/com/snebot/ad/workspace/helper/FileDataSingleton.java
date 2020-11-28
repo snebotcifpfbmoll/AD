@@ -1,12 +1,19 @@
 package com.snebot.ad.workspace.helper;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.core.JsonGenerator;
+import com.fasterxml.jackson.databind.AnnotationIntrospector;
+import com.fasterxml.jackson.databind.MapperFeature;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.module.jaxb.JaxbAnnotationIntrospector;
+import com.snebot.ad.workspace.data.Catalog;
 import com.snebot.ad.workspace.data.Product;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.*;
 
 import javax.xml.bind.JAXBContext;
-import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
 import javax.xml.parsers.DocumentBuilder;
@@ -139,7 +146,7 @@ public class FileDataSingleton {
         return obj;
     }
 
-    public <T extends Serializable> File marshallContent(T content, String path) {
+    public <T extends Serializable> File marshallContent(Catalog content, String path) {
         File file = null;
         try {
             file = new File(path);
@@ -167,5 +174,33 @@ public class FileDataSingleton {
         }
 
         return content;
+    }
+
+    private ObjectMapper getMapper() {
+        ObjectMapper objectMapper = new ObjectMapper();
+        objectMapper.enable(MapperFeature.USE_WRAPPER_NAME_AS_PROPERTY_NAME);
+        AnnotationIntrospector introspector = new JaxbAnnotationIntrospector(objectMapper.getTypeFactory());
+        objectMapper.setAnnotationIntrospector(introspector);
+        objectMapper.configure(JsonGenerator.Feature.AUTO_CLOSE_TARGET, false);
+        objectMapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
+        return objectMapper;
+    }
+
+    public <T extends Serializable> String marshallJSON(T content) {
+        try {
+            return getMapper().writeValueAsString(content);
+        } catch (Exception e) {
+            log.error("failed to marshal item as json ", e);
+            return StringUtils.EMPTY;
+        }
+    }
+
+    public <T extends Serializable> T unmarshallJSON(String content, Class<T> classType) {
+        try {
+            return getMapper().readValue(content, classType);
+        } catch (Exception e) {
+            log.error("failed to unmarshal json ", e);
+            return null;
+        }
     }
 }

@@ -4,6 +4,7 @@ import com.snebot.ad.workspace.data.ConfigValues;
 import com.snebot.ad.workspace.data.Student;
 import com.snebot.ad.workspace.helper.DummyUtils;
 import com.snebot.ad.workspace.helper.FileUtils;
+import com.snebot.ad.workspace.poc.Lambda;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.util.Assert;
@@ -60,5 +61,11 @@ class WorkspaceApplicationTests {
         DummyUtils dummyUtils = new DummyUtils();
         List<Student> students = dummyUtils.generateObjects(Student.class, 50);
         Assert.notNull(students, "failed to create student list");
+    }
+
+    @Test
+    void tryLambda() {
+        Lambda lambda = new Lambda();
+        System.out.println(lambda.getData(3));
     }
 }
