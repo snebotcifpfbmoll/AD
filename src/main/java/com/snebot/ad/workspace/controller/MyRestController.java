@@ -1,6 +1,9 @@
 package com.snebot.ad.workspace.controller;
 
 import com.snebot.ad.workspace.data.Student;
+import com.snebot.ad.workspace.persistentData.Customer;
+import com.snebot.ad.workspace.persistentData.CustomerService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -14,6 +17,15 @@ import java.util.Map;
 
 @RestController
 public class MyRestController {
+    @Autowired
+    CustomerService customerService;
+
+    @GetMapping("/getCustomers")
+    public Iterable<Customer> getCustomers() {
+        customerService.initDB();
+        return customerService.getRepository().findAll();
+    }
+
     @GetMapping("/getStudent")
     public Student getStudent(@RequestParam(value = "name", defaultValue = "unknown") String name,
                               @RequestParam(value = "age", defaultValue = "0") Integer age,
@@ -25,7 +37,7 @@ public class MyRestController {
     public List<Student> createStudents(@RequestParam(value = "q", defaultValue = "1") Integer quantity) {
         ArrayList<Student> students = new ArrayList<>();
         for (int i = 0; i < quantity; i++) {
-            Student student = new Student(String.format("Student %d", i), 0, (float)0.0);
+            Student student = new Student(String.format("Student %d", i), 0, (float) 0.0);
             students.add(student);
         }
         return students;
@@ -35,7 +47,7 @@ public class MyRestController {
     public List<Student> createStudentsWithPathVariable(@PathVariable(value = "q") Integer quantity) {
         ArrayList<Student> students = new ArrayList<>();
         for (int i = 0; i < quantity; i++) {
-            Student student = new Student(String.format("Student %d", i), 0, (float)0.0);
+            Student student = new Student(String.format("Student %d", i), 0, (float) 0.0);
             students.add(student);
         }
         return students;
